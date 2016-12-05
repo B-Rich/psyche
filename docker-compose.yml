@@ -1,0 +1,25 @@
+version: '2'
+
+volumes:
+  gems:
+    driver: local
+
+services:
+  test: &base
+    image: ruby:2.3.1
+    command: bundle exec guard start --no-bundler-warning --no-interactions
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - gems:/usr/local/bundle
+    stdin_open: true
+    tty: true
+    env_file:
+      - dev.env
+
+  app:
+    <<: *base
+    ports:
+      - 80:80
+    command: bin/console
+
